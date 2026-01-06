@@ -18,3 +18,4 @@ Output : ready-to-use dorks (click to search)
 - Censys
 - GitHub
 
+How It Works
