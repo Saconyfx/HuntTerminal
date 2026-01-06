@@ -11,3 +11,6 @@ Input  : target domain
 Select : search engine
 Output : ready-to-use dorks (click to search)
 
+## - Google
+- Shodan
+
