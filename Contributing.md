@@ -18,7 +18,6 @@ HuntTerminal is an open-source project developed to support structured passive r
 5. Open a pull request for review
 
 ## Guidelines:
-
 - Keep changes focused and relevant
 - Follow the existing project structure
 - Ensure new features are documented
