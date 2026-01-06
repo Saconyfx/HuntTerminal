@@ -1,6 +1,7 @@
 # HuntTerminal Contributing Guidelines
 
-HuntTerminal is an open-source project and contributions are welcome.
+HuntTerminal is an open-source project developed to support structured passive reconnaissance workflows Contributions are welcome to help expand dork coverage, improve search engine rules, and enhance overall usability.
+
 
 ## You may contribute in the following ways:
 - Add new dork categories
