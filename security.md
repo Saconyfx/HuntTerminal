@@ -7,6 +7,17 @@ Please report it responsibly using one of the following methods:
 
 
 
+Include the following details:
+
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Proof of concept (if applicable)
+- Environment details (browser, OS, version)
+
+You will receive an acknowledgment within **72 hours**.
+
+
 ## 🛡️ Responsible Disclosure
 
 We follow responsible disclosure practices:
