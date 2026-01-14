@@ -5,9 +5,7 @@ If you discover a security vulnerability in HuntTerminal, **do not open a public
 Please report it responsibly using one of the following methods:
 
 
-
-
-Include the following details:
+**Include the following details**
 
 - Description of the vulnerability
 - Steps to reproduce
