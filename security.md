@@ -25,4 +25,4 @@ We follow responsible disclosure practices:
 
 Researchers acting in good faith will **not** face legal action.
 
-Project Maintainer: 
+Project Maintainer: HuntTerminal Core Team
