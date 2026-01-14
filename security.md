@@ -1,1 +1,2 @@
-# sECURITY
+ ## 🚨 Reporting a Security Vulnerability
+
