@@ -24,4 +24,4 @@ HuntTerminal is an open-source project developed to support structured passive r
 - Avoid breaking existing functionality
 
 By contributing, you agree that your contributions
-will be licensed under the same license as this project.
+will be licensed under the same license as this project
