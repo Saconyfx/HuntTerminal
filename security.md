@@ -24,3 +24,5 @@ We follow responsible disclosure practices:
 - Allow reasonable time for remediation
 
 Researchers acting in good faith will **not** face legal action.
+
+Project Maintainer: 
