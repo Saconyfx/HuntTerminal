@@ -7,7 +7,7 @@ Instead of copying queries manually, users click on any generated dork, which op
 
 # What HuntTerminal Does
 
-Input  : target domain
+Input  : target domain<br>
 Select : search engine
 Output : ready-to-use dorks (click to search)
 
