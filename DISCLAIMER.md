@@ -7,4 +7,4 @@ The author is not responsible for misuse, abuse,
 or illegal activity performed using this tool.
 
 Users are responsible for ensuring they have explicit permission
-before testing any systems or assets.
+before testing any systems or assets..
