@@ -11,11 +11,15 @@ Input  : target domain<br>
 Select : search engine<br>
 Output : ready-to-use dorks (click to search)
 
-## - Google
-- Google
-- Shodan
-- FOFA
-- Censys
-- GitHub
+| Engine     | Best for                                                  |
+| ---------- | --------------------------------------------------------- |
+| **Google** | Exposed files, config leaks, indexed admin panels, PDFs   |
+| **Shodan** | Open ports, IoT devices, exposed services, SSL cert recon |
+| **GitHub** | Leaked secrets, API keys, hardcoded credentials in code   |
+| **FOFA**   | Asset discovery, exposed web apps, fingerprinting         |
+| **Censys** | Internet-wide host scans, certs, banner data              |
+| **Hunter** | Domain → email enumeration, asset attribution             |
+| **ZoomEye**| Global asset search, strong APAC coverage                 |
+| **Grep.app**| Regex code search across millions of public repos        |
 
 ## How It Works
