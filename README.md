@@ -22,7 +22,6 @@ Output : ready-to-use dorks (click to search)
 | **Grep.app**| Regex code search across millions of public repos        |
 
 ## How It Works
-
 HuntTerminal runs entirely in your browser — no backend, no API keys, no tracking. The flow is three steps:
 
 ### 1. Select a Search Engine
