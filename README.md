@@ -30,3 +30,7 @@ Pick from Google, Shodan, GitHub, FOFA, Censys, Hunter, ZoomEye, or Grep.app. Th
 
 ### 2. Enter the Target Domain
 Type the target (e.g. `example.com`) and click **Apply**. Every dork on the page rewrites itself with your target injected:
+
+### 3. Select a Dork Type & Launch
+Browse the dork categories — Information Disclosure, Exposed Cloud Storage, Leaked Secrets, Login Panels, Vulnerable Endpoints, IoT, Subdomain Discovery, Error Messages.
+
