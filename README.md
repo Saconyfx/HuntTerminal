@@ -21,4 +21,4 @@ Output : ready-to-use dorks (click to search)
 | **ZoomEye**| Global asset search, strong APAC coverage                 |
 | **Grep.app**| Regex code search across millions of public repos        |
 
-## How It Works
+## How It Works.
