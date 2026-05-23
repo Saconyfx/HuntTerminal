@@ -24,3 +24,6 @@ Output : ready-to-use dorks (click to search)
 ## How It Works
 
 HuntTerminal runs entirely in your browser — no backend, no API keys, no tracking. The flow is three steps:
+
+### 1. Select a Search Engine
+Pick from Google, Shodan, GitHub, FOFA, Censys, Hunter, ZoomEye, or Grep.app. The page filters to show only dorks compatible with that engine.
