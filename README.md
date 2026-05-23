@@ -1,4 +1,4 @@
-# HuntTerminal
+# About HuntTerminal
 
 ## About  
 
