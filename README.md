@@ -27,3 +27,6 @@ HuntTerminal runs entirely in your browser — no backend, no API keys, no track
 
 ### 1. Select a Search Engine
 Pick from Google, Shodan, GitHub, FOFA, Censys, Hunter, ZoomEye, or Grep.app. The page filters to show only dorks compatible with that engine.
+
+### 2. Enter the Target Domain
+Type the target (e.g. `example.com`) and click **Apply**. Every dork on the page rewrites itself with your target injected:
