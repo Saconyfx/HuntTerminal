@@ -44,3 +44,5 @@ Each dork card shows:
 
 ### Behind the Scenes
 
+Every engine has its own URL template. When you click **Run**, HuntTerminal URL-encodes the dork (base64 for FOFA, since that's what its API expects) and launches the search in a new tab:
+
