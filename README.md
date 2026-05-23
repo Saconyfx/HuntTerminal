@@ -34,3 +34,13 @@ Type the target (e.g. `example.com`) and click **Apply**. Every dork on the page
 ### 3. Select a Dork Type & Launch
 Browse the dork categories — Information Disclosure, Exposed Cloud Storage, Leaked Secrets, Login Panels, Vulnerable Endpoints, IoT, Subdomain Discovery, Error Messages.
 
+
+Each dork card shows:
+- **Severity tag** — high / medium / low, color-coded
+- **The live query** — already injected with your target
+- **Run button** — opens the search on the selected engine in a new tab
+- **Copy button** — grabs the raw query for manual use
+
+
+### Behind the Scenes
+
