@@ -46,3 +46,13 @@ Each dork card shows:
 
 Every engine has its own URL template. When you click **Run**, HuntTerminal URL-encodes the dork (base64 for FOFA, since that's what its API expects) and launches the search in a new tab:
 
+| Engine    | Launch URL pattern                                        |
+| --------- | --------------------------------------------------------- |
+| Google    | `google.com/search?q={DORK}`                              |
+| Shodan    | `shodan.io/search?query={DORK}`                           |
+| GitHub    | `github.com/search?q={DORK}&type=code`                    |
+| FOFA      | `fofa.info/result?qbase64={DORK_B64}`                     |
+| Censys    | `search.censys.io/search?resource=hosts&q={DORK}`         |
+| Hunter    | `hunter.how/list?searchValue={DORK}`                      |
+| ZoomEye   | `zoomeye.org/searchResult?q={DORK}`                       |
+| Grep.app  | `grep.app/search?q={DORK}`                                |
