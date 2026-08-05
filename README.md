@@ -1,7 +1,7 @@
 # About HuntTerminal
 
-
 HuntTerminal is a web-based dork generation tool built for bug bounty hunters and offensive security practitioners. HuntTerminal provides a browser-based interface that allows users to select a search engine and automatically generate engine-specific dorks for structured passive reconnaissance against a target domain.
+
 Instead of copying queries manually, users click on any generated dork, which opens a new browser tab and executes the search directly on the selected platform.
 
 # What HuntTerminal Does
@@ -21,7 +21,21 @@ Output : ready-to-use dorks (click to search)
 | **ZoomEye**| Global asset search, strong APAC coverage                 |
 | **Grep.app**| Regex code search across millions of public repos        |
 
+# Features
+
+- **8 search engines** wired up out of the box
+- **100+ pre-built dorks** across categories: Information Disclosure, Exposed Cloud Storage (Azure Blob, AWS S3, GCS, Firebase), Leaked Secrets & Tokens, Login & Admin Panels, Vulnerable Endpoints, IoT & Industrial, Subdomain & Asset Discovery, Error Messages
+- **Live target injection** — type your domain once, every dork on the page rewrites itself
+- **One-click launch** — click any card, the query opens on its native engine in a new tab
+- **Copy-to-clipboard** — grab the raw query if you want to paste it manually
+- **Custom dork file loader** — point at any hosted JSON dork list and merge it into the library on the fly
+- **Search & filter** — narrow by engine, dork type, or free-text search
+- **Dark / light mode** — preference persists across sessions
+- **Zero backend, zero tracking, zero API keys** — everything runs client-side
+- **Works offline** once cloned
+
 ## How It Works
+
 HuntTerminal runs entirely in your browser — no backend, no API keys, no tracking. The flow is three steps:
 
 ### 1. Select a Search Engine
@@ -30,20 +44,22 @@ Pick from Google, Shodan, GitHub, FOFA, Censys, Hunter, ZoomEye, or Grep.app. Th
 ### 2. Enter the Target Domain
 Type the target (e.g. `example.com`) and click **Apply**. Every dork on the page rewrites itself with your target injected:
 
+```
+Before:  site:{TARGET} ext:env | ext:yml -git
+After:   site:example.com ext:env | ext:yml -git
+```
+
 ### 3. Select a Dork Type & Launch
 Browse the dork categories — Information Disclosure, Exposed Cloud Storage, Leaked Secrets, Login Panels, Vulnerable Endpoints, IoT, Subdomain Discovery, Error Messages.
 
-
 Each dork card shows:
-- **Severity tag** — high / medium / low, color-coded
+- **The category tag** — what kind of finding the dork targets
 - **The live query** — already injected with your target
-- **Run button** — opens the search on the selected engine in a new tab
-- **Copy button** — grabs the raw query for manual use
-
+- **Click anywhere on the card** — opens the search on the selected engine in a new tab
+- **Copy icon inside the query box** — grabs the raw query for manual use
 
 ### Behind the Scenes
-
-Every engine has its own URL template. When you click **Run**, HuntTerminal URL-encodes the dork (base64 for FOFA, since that's what its API expects) and launches the search in a new tab:
+Every engine has its own URL template. When you click a card, HuntTerminal URL-encodes the dork (base64 for FOFA, since that's what its API expects) and launches the search in a new tab:
 
 | Engine    | Launch URL pattern                                        |
 | --------- | --------------------------------------------------------- |
@@ -55,3 +71,112 @@ Every engine has its own URL template. When you click **Run**, HuntTerminal URL-
 | Hunter    | `hunter.how/list?searchValue={DORK}`                      |
 | ZoomEye   | `zoomeye.org/searchResult?q={DORK}`                       |
 | Grep.app  | `grep.app/search?q={DORK}`                                |
+
+# Clone & Run
+
+Clone the repo:
+
+```bash
+git clone https://github.com/Saconyfx/HuntTerminal.git
+cd HuntTerminal
+```
+
+## Option A — Just Double-Click It (easiest)
+
+Open `index.html` by double-clicking it in your file explorer. It opens in your default browser and works immediately. Everything (CSS, JS, all 100 dorks) is inlined into that one file — no server, no dependencies, no build step, no internet required after cloning.
+
+This is the recommended way to use HuntTerminal.
+
+## Option B — Run a Local Server (for contributors)
+
+If you want to edit the source files under `src/` and see changes without rebuilding every time, spin up a static local server:
+
+### Python (built into most systems)
+
+```bash
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000` in your browser.
+
+### Node.js
+
+```bash
+npx serve .
+# or
+npx http-server -p 8000
+```
+
+### PHP
+
+```bash
+php -S localhost:8000
+```
+
+### VS Code
+
+Install the **Live Server** extension → right-click `index.html` → "Open with Live Server."
+
+Any static file server works. HuntTerminal makes no server-side calls at all — the server just needs to hand over files.
+
+# Project Structure
+
+```
+HuntTerminal/
+├── index.html              # THE APP — single self-contained file, run this
+├── src/                    # source files for contributors
+│   ├── index.template.html # HTML skeleton with build placeholders
+│   ├── assets/
+│   │   ├── css/style.css   # styles
+│   │   └── js/app.js       # app logic
+│   ├── data/
+│   │   └── dorks.json      # the dork database
+│   └── build.py            # rebuilds index.html from src/
+├── LICENSE
+└── README.md
+```
+
+- **End users** run `index.html` directly. Nothing else needed.
+- **Contributors** edit files in `src/` and run `python3 src/build.py` to regenerate `index.html`.
+
+# Adding New Dorks
+
+Open `src/data/dorks.json` and append an entry:
+
+```json
+{
+  "id": "sh-cloud-014",
+  "engine": "shodan",
+  "category": "Exposed Cloud Storage",
+  "tag": "AWS S3",
+  "query": "ssl.cert.subject.cn:\"s3.amazonaws.com\" hostname:{TARGET}"
+}
+```
+
+Field rules:
+
+- `id` — unique, engine-prefixed for readability
+- `engine` — one of: `google`, `shodan`, `github`, `fofa`, `censys`, `hunter`, `zoomeye`, `grepapp`
+- `category` — becomes the section header on the page
+- `tag` — shown as the card's title
+- `query` — the raw dork. Use `{TARGET}` anywhere the target domain should be injected
+
+Then rebuild:
+
+```bash
+python3 src/build.py
+```
+
+That regenerates `index.html` with your new dorks baked in.
+
+# Custom Dork Files (No Rebuild Needed)
+
+The **Custom Dork File URL** field on the app lets you load your own dork list at runtime.
+
+Host a JSON file anywhere (GitHub raw, gist, your own server) that follows the same schema as `src/data/dorks.json`, paste the URL, click **⚙ Generate**, and those dorks merge into the library live.
+
+Useful for:
+- Team-specific dork sets that shouldn't be public
+- Program-specific dorks (e.g. dorks tuned for a particular bug bounty target)
+- Trying out community-shared dork packs
+
