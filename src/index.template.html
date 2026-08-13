@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HuntTerminal — Recon Console for Bug Bounty Hunters</title>
+  <meta name="description" content="HuntTerminal is a browser-based dork generation tool for bug bounty hunters and offensive security practitioners." />
+  <style>
+/*__STYLES__*/
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="wrap header-row">
+      <a class="brand" href="/" aria-label="HuntTerminal home">
+        <svg class="brand-mark" viewBox="0 0 32 32" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1" y="1" width="30" height="30" stroke="currentColor" stroke-width="2"/>
+          <path d="M7 10L13 16L7 22" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+          <path d="M16 22H25" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+        <span class="brand-word">HuntTerminal</span>
+      </a>
+      <div class="header-meta">
+        <span class="header-status"><i></i>OPERATIONAL</span>
+      </div>
+      <nav class="nav">
+        <a href="#console">Console</a>
+        <a href="#library">Library</a>
+        <a href="https://github.com/Saconyfx/HuntTerminal" target="_blank" rel="noopener">Source ↗</a>
+        <button id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <div class="hero-topline">
+      <span class="hero-index">01 / RECON</span>
+      <span class="hero-version">v1.0 — 2026</span>
+    </div>
+
+    <div class="hero-main">
+      <h1 class="hero-title">
+        <span class="hero-line">The</span>
+        <span class="hero-line hero-italic">recon</span>
+        <span class="hero-line">console</span>
+        <span class="hero-line">for hunters<span class="hero-dot">.</span></span>
+      </h1>
+
+      <aside class="hero-aside">
+        <p class="hero-lede">A browser-based dorking arsenal for bug bounty hunters and offensive security practitioners. Pick an engine, drop in a target, fire pre-built recon queries — one click each.</p>
+        <div class="hero-cta">
+          <a href="#console" class="link-arrow">Open the console <span>→</span></a>
+          <a href="#library" class="link-arrow">Browse dorks <span>→</span></a>
+        </div>
+      </aside>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">08</div>
+        <div class="stat-label">Search<br/>engines</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100<span>+</span></div>
+        <div class="stat-label">Pre-built<br/>dorks</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">00</div>
+        <div class="stat-label">Backends<br/>required</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Click to<br/>execute</div>
+      </div>
+    </div>
+
+    <div class="hero-ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>GOOGLE</span><span>·</span><span>SHODAN</span><span>·</span><span>GITHUB</span><span>·</span><span>FOFA</span><span>·</span><span>CENSYS</span><span>·</span><span>HUNTER</span><span>·</span><span>ZOOMEYE</span><span>·</span><span>GREP.APP</span><span>·</span>
+        <span>GOOGLE</span><span>·</span><span>SHODAN</span><span>·</span><span>GITHUB</span><span>·</span><span>FOFA</span><span>·</span><span>CENSYS</span><span>·</span><span>HUNTER</span><span>·</span><span>ZOOMEYE</span><span>·</span><span>GREP.APP</span><span>·</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section-block" id="console">
+    <div class="section-label">02 / CONSOLE</div>
+    <h2 class="section-heading">Recon <span class="section-italic">console</span></h2>
+    <div class="panel">
+
+      <div class="panel-row">
+        <div class="field">
+          <label for="engine">Select a search engine:</label>
+          <select id="engine">
+            <option value="all">All Engines</option>
+            <option value="google">Google</option>
+            <option value="shodan">Shodan</option>
+            <option value="github">GitHub</option>
+            <option value="fofa">FOFA</option>
+            <option value="censys">Censys</option>
+            <option value="hunter">Hunter</option>
+            <option value="zoomeye">ZoomEye</option>
+            <option value="grepapp">Grep.app</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="target">Enter Target Domain:</label>
+          <div class="field-inline">
+            <input id="target" type="text" value="example.com" placeholder="example.com" autocomplete="off" spellcheck="false" />
+            <button id="apply" class="btn">✓ Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="field wide">
+          <label for="dork-type">Select Dork Type:</label>
+          <select id="dork-type">
+            <option value="all">-- All Dork Types --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="field wide">
+          <label for="custom-url">Custom Dork File URL:</label>
+          <div class="field-inline">
+            <input id="custom-url" type="url" placeholder="Enter custom dork file URL or select from dropdown above" autocomplete="off" spellcheck="false" />
+            <button id="generate" class="btn">⚙ Generate</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="wrap section-block" id="library">
+
+    <div class="section-label">03 / LIBRARY</div>
+    <h2 class="section-heading">Dork <span class="section-italic">arsenal</span></h2>
+
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="search dorks..." />
+    </div>
+
+    <div class="status" id="status">Loading dorks...</div>
+
+    <div id="results"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <div>HuntTerminal · v1.0 · Built by <a href="https://github.com/Saconyfx" target="_blank" rel="noopener">saconyfx</a></div>
+      <div>Authorized testing only. Stay in scope. Stay legal.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>window.__DORKS__ = /*__DORKS__*/;</script>
+  <script>
+/*__APP__*/
+  </script>
+</body>
+</html>

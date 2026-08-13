@@ -180,3 +180,35 @@ Useful for:
 - Program-specific dorks (e.g. dorks tuned for a particular bug bounty target)
 - Trying out community-shared dork packs
 
+# Modifying Styles or Logic
+
+- CSS lives in `src/assets/css/style.css`. Uses CSS variables — swapping the theme is just a variable flip.
+- JS lives in `src/assets/js/app.js`. Vanilla, no framework, no build tooling beyond the inline step in `build.py`.
+- After editing either, run `python3 src/build.py` to regenerate `index.html`.
+
+# Roadmap
+
+- [ ] Expanded ZoomEye and Grep.app dork sets
+- [ ] CTF / lab-mode dorks (HackTheBox, TryHackMe targets)
+- [ ] Export selected dorks as a `.txt` recon playbook
+- [ ] Bulk launch — open every dork in a category at once (with confirm modal)
+- [ ] Browser extension: right-click a domain anywhere → HuntTerminal
+- [ ] Community dork submissions via PRs against `src/data/dorks.json`
+
+# Legal & Ethics
+
+HuntTerminal is built for **authorized security testing** — bug bounty programs, internal pentests, red team engagements, CTFs, and recon on your own assets.
+
+Running dorks against systems you don't own — or don't have written permission to test — may violate computer misuse laws in your jurisdiction (CFAA in the US, Computer Misuse Act in the UK, etc.). You are responsible for how you use this tool.
+
+The dorks themselves only query **public search engines** — HuntTerminal never touches the target directly. But intent matters legally and ethically. Stay in scope.
+
+# Credits
+
+Built and maintained by **[saconyfx](https://github.com/Saconyfx)**.
+
+Inspired by the Google Hacking Database (Exploit-DB), DorkSearch, and SecurityToolkit's "Dork For Me." HuntTerminal extends the concept across 8 engines, adds cloud-focused recon, and keeps the whole thing client-side.
+
+# License
+
+MIT — see `LICENSE`. Fork it, ship it, remix it.

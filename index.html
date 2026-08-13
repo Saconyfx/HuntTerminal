@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HuntTerminal — Recon Console for Bug Bounty Hunters</title>
+  <meta name="description" content="HuntTerminal is a browser-based dork generation tool for bug bounty hunters and offensive security practitioners." />
+  <style>
+/* =============================================================
+   HuntTerminal — Stylesheet
+   Aesthetic: enterprise monochrome · black & white · refined
+   ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700;800&display=swap');
+
+/* ---------- Theme variables ---------- */
+:root {
+  /* light (default) — clean enterprise white */
+  --bg: #ffffff;
+  --bg-elevated: #fafafa;
+  --bg-card: #ffffff;
+  --bg-hover: #f4f4f4;
+  --border: #e5e5e5;
+  --border-hot: #c4c4c4;
+  --border-active: #000000;
+  --fg: #000000;
+  --fg-dim: #4a4a4a;
+  --fg-mute: #9a9a9a;
+  --accent: #000000;
+  --accent-inv: #ffffff;
+  --warn: #2a2a2a;
+  --danger: #000000;
+  --info: #6a6a6a;
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --bg-elevated: #0a0a0a;
+  --bg-card: #0f0f0f;
+  --bg-hover: #161616;
+  --border: #1f1f1f;
+  --border-hot: #3a3a3a;
+  --border-active: #ffffff;
+  --fg: #ffffff;
+  --fg-dim: #a0a0a0;
+  --fg-mute: #555555;
+  --accent: #ffffff;
+  --accent-inv: #000000;
+  --warn: #d4d4d4;
+  --danger: #ffffff;
+  --info: #888888;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Layout ---------- */
+.wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ---------- Header ---------- */
+.header {
+  border-bottom: 1px solid var(--fg);
+  padding: 14px 0;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+.header-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--fg);
+  text-decoration: none;
+}
+.brand-mark { color: var(--fg); flex-shrink: 0; }
+.brand-word {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--fg);
+}
+.header-meta {
+  display: flex;
+  justify-content: center;
+}
+.header-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-status i {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--fg);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .25; }
+}
+
+.nav { display: flex; gap: 4px; align-items: center; }
+.nav a, .nav button {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--fg-dim);
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav a:hover, .nav button:hover { color: var(--fg); }
+.nav button { font-size: 15px; padding: 6px 10px; }
+
+/* ---------- Hero ---------- */
+.hero {
+  padding: 60px 0 0;
+  border-bottom: 1px solid var(--fg);
+  overflow: hidden;
+}
+.hero-topline {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--fg-mute);
+  padding-bottom: 40px;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 48px;
+}
+.hero-topline span::before {
+  content: "//";
+  color: var(--fg);
+  margin-right: 6px;
+}
+
+.hero-main {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 60px;
+  align-items: end;
+  margin-bottom: 72px;
+}
+
+.hero-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: clamp(56px, 11vw, 148px);
+  line-height: .92;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+  color: var(--fg);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hero-line { display: block; }
+.hero-italic {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg-dim);
+  padding-left: 0.5em;
+}
+.hero-dot {
+  color: var(--fg-dim);
+  display: inline-block;
+  transform: translateY(-0.1em);
+}
+
+.hero-aside {
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.hero-lede {
+  font-size: 16px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  max-width: 44ch;
+  border-left: 2px solid var(--fg);
+  padding-left: 20px;
+  margin: 0;
+}
+.hero-cta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.link-arrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--fg);
+  padding-bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: gap .2s;
+}
+.link-arrow span { transition: transform .2s; }
+.link-arrow:hover { gap: 14px; }
+.link-arrow:hover span { transform: translateX(4px); }
+
+/* Stats grid */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--fg);
+  border-bottom: 1px solid var(--fg);
+  margin-bottom: 0;
+}
+.stat {
+  padding: 32px 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+.stat:last-child { border-right: none; }
+.stat::before {
+  content: counter(stat-count, decimal-leading-zero);
+  counter-increment: stat-count;
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--fg-mute);
+  letter-spacing: 1px;
+}
+.hero-stats { counter-reset: stat-count; }
+.stat-num {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--fg);
+}
+.stat-num span {
+  color: var(--fg-dim);
+  font-weight: 400;
+}
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--fg-dim);
+  line-height: 1.4;
+}
+
+/* Ticker */
+.hero-ticker {
+  overflow: hidden;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  white-space: nowrap;
+  position: relative;
+}
+.hero-ticker::before,
+.hero-ticker::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-ticker::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+.hero-ticker::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+.ticker-track {
+  display: inline-flex;
+  gap: 32px;
+  align-items: center;
+  animation: ticker 40s linear infinite;
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 800;
+  font-size: 44px;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.ticker-track span:nth-child(even) {
+  color: var(--fg-mute);
+  font-weight: 400;
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---------- Generator panel ---------- */
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--fg-mute);
+  margin-bottom: 20px;
+}
+.section-label::before {
+  content: "//";
+  color: var(--fg);
+  margin-right: 6px;
+}
+#console .section-label { margin-bottom: 12px; }
+.section-block { padding-top: 96px; }
+.section-heading {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: var(--fg);
+  margin: 0 0 40px;
+}
+.section-italic {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg-dim);
+}
+
+#console .section-label { color: var(--fg-mute); }
+#console::before { content: none; }
+
+.panel {
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  border-radius: 0;
+  margin: 0 auto;
+  padding: 40px;
+  position: relative;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.panel::before {
+  content: "▸ Configure your recon session below";
+  position: static;
+  background: none;
+  padding: 0 0 20px;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  text-transform: none;
+  color: var(--fg-dim);
+  border-bottom: 1px dashed var(--border);
+  transform: none;
+  margin-bottom: 8px;
+}
+
+.panel-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field.wide { grid-column: 1 / -1; }
+
+.field label {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.field select,
+.field input {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  outline: none;
+  border-radius: 8px;
+  transition: border-color .15s;
+  width: 100%;
+}
+.field select:focus,
+.field input:focus {
+  border-color: var(--border-active);
+}
+
+.field-inline {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.field-inline input {
+  flex: 1;
+}
+
+.btn {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--accent);
+  color: var(--accent-inv);
+  border: 1px solid var(--accent);
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  border-radius: 8px;
+}
+.btn:hover {
+  background: var(--accent-inv);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hot);
+}
+
+/* Responsive panel */
+@media (max-width: 720px) {
+  .panel-row { grid-template-columns: 1fr; }
+  .panel { padding: 24px 18px; }
+}
+
+/* ---------- Search + filters bar ---------- */
+.toolbar {
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  margin: 28px 0 16px;
+}
+.toolbar input[type="search"] {
+  flex: 1;
+  min-width: 240px;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--bg-elevated);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  outline: none;
+  border-radius: 8px;
+}
+.toolbar input[type="search"]:focus {
+  border-color: var(--border-active);
+}
+.chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--fg-dim);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 6px;
+}
+.chip:hover { color: var(--fg); border-color: var(--border-hot); }
+.chip.active {
+  background: var(--accent);
+  color: var(--accent-inv);
+  border-color: var(--accent);
+}
+
+/* ---------- Status line ---------- */
+.status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  margin: 16px 0 28px;
+}
+.status .num { color: var(--fg); font-weight: 600; }
+
+/* ---------- Dork grid ---------- */
+.category-block { margin-bottom: 48px; }
+.category-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--fg);
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.category-title .count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-mute);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+/* ---------- Dork grid ---------- */
+.category-block { margin-bottom: 48px; }
+.category-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--fg);
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.category-title .count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-mute);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+/* ---------- Dork card ---------- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  display: flex; flex-direction: column; gap: 12px;
+  transition: border-color .15s, background .15s, transform .15s, box-shadow .15s;
+  cursor: pointer;
+  position: relative;
+}
+.card:hover {
+  border-color: var(--border-active);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px -8px rgba(0,0,0,.15);
+}
+.card:active { transform: translateY(0); }
+
+.card-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--fg-mute);
+  font-weight: 600;
+}
+
+/* Query box with embedded copy button */
+.card-query-wrap {
+  position: relative;
+}
+.card-query {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--fg);
+  padding: 12px 44px 12px 14px;
+  color: var(--fg);
+  word-break: break-all;
+  line-height: 1.55;
+  border-radius: 6px;
+  white-space: pre-wrap;
+}
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  color: var(--fg-dim);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .15s;
+  font-family: inherit;
+}
+.copy-btn:hover {
+  color: var(--fg);
+  background: var(--bg);
+  border-color: var(--border-active);
+}
+
+/* ---------- Empty state ---------- */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--fg-mute);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+.empty::before {
+  content: "[ no_results ]";
+  display: block;
+  color: var(--fg);
+  font-size: 18px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  margin-top: 64px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+}
+.footer-row {
+  display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.footer a { color: var(--fg-dim); text-decoration: none; }
+.footer a:hover { color: var(--fg); }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--fg);
+  color: var(--accent-inv);
+  padding: 12px 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: all .3s cubic-bezier(.2,.8,.2,1);
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- Reveal on load ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: reveal .4s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .header-row { grid-template-columns: auto 1fr auto; }
+  .header-meta { display: none; }
+  .hero-main { grid-template-columns: 1fr; gap: 40px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(2) { border-right: none; }
+  .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--border); }
+  .ticker-track { font-size: 32px; }
+}
+
+@media (max-width: 720px) {
+  .wrap { padding: 0 20px; }
+  .hero { padding: 40px 0 0; }
+  .hero-topline { padding-bottom: 24px; margin-bottom: 32px; font-size: 10px; }
+  .hero-main { margin-bottom: 48px; }
+  .hero-title { font-size: 64px; letter-spacing: -0.04em; }
+  .stat { padding: 24px 16px; }
+  .stat-num { font-size: 44px; }
+  .nav a, .nav button { padding: 6px 8px; font-size: 10px; }
+  .nav a { display: none; }
+  .nav a:last-of-type, .nav button { display: inline-flex; }
+  .ticker-track { font-size: 24px; gap: 20px; }
+}
+
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="wrap header-row">
+      <a class="brand" href="/" aria-label="HuntTerminal home">
+        <svg class="brand-mark" viewBox="0 0 32 32" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1" y="1" width="30" height="30" stroke="currentColor" stroke-width="2"/>
+          <path d="M7 10L13 16L7 22" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+          <path d="M16 22H25" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+        <span class="brand-word">HuntTerminal</span>
+      </a>
+      <div class="header-meta">
+        <span class="header-status"><i></i>OPERATIONAL</span>
+      </div>
+      <nav class="nav">
+        <a href="#console">Console</a>
+        <a href="#library">Library</a>
+        <a href="https://github.com/Saconyfx/HuntTerminal" target="_blank" rel="noopener">Source ↗</a>
+        <button id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <div class="hero-topline">
+      <span class="hero-index">01 / RECON</span>
+      <span class="hero-version">v1.0 — 2026</span>
+    </div>
+
+    <div class="hero-main">
+      <h1 class="hero-title">
+        <span class="hero-line">The</span>
+        <span class="hero-line hero-italic">recon</span>
+        <span class="hero-line">console</span>
+        <span class="hero-line">for hunters<span class="hero-dot">.</span></span>
+      </h1>
+
+      <aside class="hero-aside">
+        <p class="hero-lede">A browser-based dorking arsenal for bug bounty hunters and offensive security practitioners. Pick an engine, drop in a target, fire pre-built recon queries — one click each.</p>
+        <div class="hero-cta">
+          <a href="#console" class="link-arrow">Open the console <span>→</span></a>
+          <a href="#library" class="link-arrow">Browse dorks <span>→</span></a>
+        </div>
+      </aside>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">08</div>
+        <div class="stat-label">Search<br/>engines</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100<span>+</span></div>
+        <div class="stat-label">Pre-built<br/>dorks</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">00</div>
+        <div class="stat-label">Backends<br/>required</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Click to<br/>execute</div>
+      </div>
+    </div>
+
+    <div class="hero-ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>GOOGLE</span><span>·</span><span>SHODAN</span><span>·</span><span>GITHUB</span><span>·</span><span>FOFA</span><span>·</span><span>CENSYS</span><span>·</span><span>HUNTER</span><span>·</span><span>ZOOMEYE</span><span>·</span><span>GREP.APP</span><span>·</span>
+        <span>GOOGLE</span><span>·</span><span>SHODAN</span><span>·</span><span>GITHUB</span><span>·</span><span>FOFA</span><span>·</span><span>CENSYS</span><span>·</span><span>HUNTER</span><span>·</span><span>ZOOMEYE</span><span>·</span><span>GREP.APP</span><span>·</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section-block" id="console">
+    <div class="section-label">02 / CONSOLE</div>
+    <h2 class="section-heading">Recon <span class="section-italic">console</span></h2>
+    <div class="panel">
+
+      <div class="panel-row">
+        <div class="field">
+          <label for="engine">Select a search engine:</label>
+          <select id="engine">
+            <option value="all">All Engines</option>
+            <option value="google">Google</option>
+            <option value="shodan">Shodan</option>
+            <option value="github">GitHub</option>
+            <option value="fofa">FOFA</option>
+            <option value="censys">Censys</option>
+            <option value="hunter">Hunter</option>
+            <option value="zoomeye">ZoomEye</option>
+            <option value="grepapp">Grep.app</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="target">Enter Target Domain:</label>
+          <div class="field-inline">
+            <input id="target" type="text" value="example.com" placeholder="example.com" autocomplete="off" spellcheck="false" />
+            <button id="apply" class="btn">✓ Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="field wide">
+          <label for="dork-type">Select Dork Type:</label>
+          <select id="dork-type">
+            <option value="all">-- All Dork Types --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="field wide">
+          <label for="custom-url">Custom Dork File URL:</label>
+          <div class="field-inline">
+            <input id="custom-url" type="url" placeholder="Enter custom dork file URL or select from dropdown above" autocomplete="off" spellcheck="false" />
+            <button id="generate" class="btn">⚙ Generate</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="wrap section-block" id="library">
+
+    <div class="section-label">03 / LIBRARY</div>
+    <h2 class="section-heading">Dork <span class="section-italic">arsenal</span></h2>
+
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="search dorks..." />
+    </div>
+
+    <div class="status" id="status">Loading dorks...</div>
+
+    <div id="results"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <div>HuntTerminal · v1.0 · Built by <a href="https://github.com/Saconyfx" target="_blank" rel="noopener">saconyfx</a></div>
+      <div>Authorized testing only. Stay in scope. Stay legal.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>window.__DORKS__ = [
+  {"id":"g-info-001","engine":"google","category":"Information Disclosure","tag":"Exposed config","query":"site:{TARGET} ext:env | ext:yml | ext:yaml -git"},
+  {"id":"g-info-002","engine":"google","category":"Information Disclosure","tag":"Exposed config","query":"site:{TARGET} inurl:config"},
+  {"id":"g-info-003","engine":"google","category":"Information Disclosure","tag":"Exposed config","query":"site:{TARGET} intitle:\"index of\" .env"},
+  {"id":"g-info-004","engine":"google","category":"Information Disclosure","tag":"Exposed config","query":"site:{TARGET} intitle:\"index of\" config.php"},
+  {"id":"g-info-005","engine":"google","category":"Information Disclosure","tag":"Exposed log","query":"site:{TARGET} ext:log | ext:txt | ext:conf | ext:cfg | ext:ini"},
+  {"id":"g-info-006","engine":"google","category":"Information Disclosure","tag":"Exposed log","query":"site:{TARGET} intitle:\"index of\" \"error_log\""},
+  {"id":"g-info-007","engine":"google","category":"Information Disclosure","tag":"Exposed database","query":"site:{TARGET} ext:sql | ext:db | ext:dbf | ext:mdb"},
+  {"id":"g-info-008","engine":"google","category":"Information Disclosure","tag":"Exposed database","query":"site:{TARGET} \"MySQL dump\" filetype:sql"},
+  {"id":"g-info-009","engine":"google","category":"Information Disclosure","tag":"Exposed database","query":"site:{TARGET} \"phpMyAdmin\" \"running on\" inurl:main.php"},
+  {"id":"g-info-010","engine":"google","category":"Information Disclosure","tag":"Backups","query":"site:{TARGET} ext:bak | ext:backup | ext:old | ext:save | ext:swp"},
+  {"id":"g-info-011","engine":"google","category":"Information Disclosure","tag":"Backups","query":"site:{TARGET} intitle:\"index of\" backup"},
+  {"id":"g-info-012","engine":"google","category":"Information Disclosure","tag":"Source code","query":"site:{TARGET} ext:php | ext:asp | ext:aspx | ext:jsp intext:\"password\""},
+
+  {"id":"g-panel-001","engine":"google","category":"Login & Admin Panels","tag":"Admin panel","query":"site:{TARGET} inurl:admin | inurl:login | inurl:cpanel"},
+  {"id":"g-panel-002","engine":"google","category":"Login & Admin Panels","tag":"Admin panel","query":"site:{TARGET} intitle:\"admin login\" | intitle:\"dashboard\""},
+  {"id":"g-panel-003","engine":"google","category":"Login & Admin Panels","tag":"CMS","query":"site:{TARGET} inurl:wp-admin | inurl:wp-login"},
+  {"id":"g-panel-004","engine":"google","category":"Login & Admin Panels","tag":"CMS","query":"site:{TARGET} inurl:administrator (Joomla)"},
+  {"id":"g-panel-005","engine":"google","category":"Login & Admin Panels","tag":"Webmail","query":"site:{TARGET} intitle:\"Outlook Web App\" | inurl:owa/auth"},
+
+  {"id":"g-cloud-001","engine":"google","category":"Exposed Cloud Storage","tag":"AWS S3","query":"site:s3.amazonaws.com {TARGET}"},
+  {"id":"g-cloud-002","engine":"google","category":"Exposed Cloud Storage","tag":"AWS S3","query":"inurl:s3.amazonaws.com intitle:\"index of\" {TARGET}"},
+  {"id":"g-cloud-003","engine":"google","category":"Exposed Cloud Storage","tag":"Azure Blob","query":"site:blob.core.windows.net {TARGET}"},
+  {"id":"g-cloud-004","engine":"google","category":"Exposed Cloud Storage","tag":"GCP Storage","query":"site:storage.googleapis.com {TARGET}"},
+  {"id":"g-cloud-005","engine":"google","category":"Exposed Cloud Storage","tag":"Firebase","query":"site:firebaseio.com {TARGET}"},
+  {"id":"g-cloud-006","engine":"google","category":"Exposed Cloud Storage","tag":"DigitalOcean","query":"site:digitaloceanspaces.com {TARGET}"},
+
+  {"id":"g-vuln-001","engine":"google","category":"Vulnerable Endpoints","tag":"File upload","query":"site:{TARGET} inurl:upload | inurl:uploadfile | inurl:upload.php"},
+  {"id":"g-vuln-002","engine":"google","category":"Vulnerable Endpoints","tag":"File upload","query":"site:{TARGET} \"Select a file to upload\" | \"Choose a file to upload\""},
+  {"id":"g-vuln-003","engine":"google","category":"Vulnerable Endpoints","tag":"SQLi candidate","query":"site:{TARGET} inurl:id= | inurl:pid= | inurl:cat="},
+  {"id":"g-vuln-004","engine":"google","category":"Vulnerable Endpoints","tag":"Open redirect","query":"site:{TARGET} inurl:redirect= | inurl:url= | inurl:next="},
+
+  {"id":"g-err-001","engine":"google","category":"Error Messages & Stack Traces","tag":"PHP errors","query":"site:{TARGET} \"Fatal error\" | \"Warning:\" | \"PHP Parse error\""},
+  {"id":"g-err-002","engine":"google","category":"Error Messages & Stack Traces","tag":"SQL errors","query":"site:{TARGET} \"SQL syntax\" | \"mysql_fetch\" | \"ORA-\""},
+  {"id":"g-err-003","engine":"google","category":"Error Messages & Stack Traces","tag":"Stack trace","query":"site:{TARGET} \"Traceback (most recent call last)\""},
+
+  {"id":"g-sub-001","engine":"google","category":"Subdomain & Asset Discovery","tag":"Subdomains","query":"site:*.{TARGET} -www"},
+  {"id":"g-sub-002","engine":"google","category":"Subdomain & Asset Discovery","tag":"Subdomains","query":"site:{TARGET} -site:www.{TARGET}"},
+  {"id":"g-sub-003","engine":"google","category":"Subdomain & Asset Discovery","tag":"PDFs / docs","query":"site:{TARGET} ext:pdf | ext:doc | ext:docx | ext:xls | ext:xlsx"},
+
+  {"id":"sh-port-001","engine":"shodan","category":"IoT & Industrial","tag":"Open ports","query":"hostname:{TARGET}"},
+  {"id":"sh-port-002","engine":"shodan","category":"IoT & Industrial","tag":"Open ports","query":"hostname:{TARGET} port:21"},
+  {"id":"sh-port-003","engine":"shodan","category":"IoT & Industrial","tag":"Open ports","query":"hostname:{TARGET} port:3389"},
+  {"id":"sh-port-004","engine":"shodan","category":"IoT & Industrial","tag":"Databases","query":"hostname:{TARGET} port:27017,3306,5432,6379,9200"},
+  {"id":"sh-port-005","engine":"shodan","category":"IoT & Industrial","tag":"Cameras","query":"hostname:{TARGET} \"Server: webcamXP\""},
+  {"id":"sh-port-006","engine":"shodan","category":"IoT & Industrial","tag":"Cameras","query":"hostname:{TARGET} \"Hikvision\" OR \"Dahua\""},
+  {"id":"sh-port-007","engine":"shodan","category":"IoT & Industrial","tag":"SCADA","query":"hostname:{TARGET} port:502"},
+  {"id":"sh-port-008","engine":"shodan","category":"IoT & Industrial","tag":"Printers","query":"hostname:{TARGET} \"Server: HP-ChaiSOE\""},
+
+  {"id":"sh-cloud-001","engine":"shodan","category":"Exposed Cloud Storage","tag":"AWS S3","query":"ssl.cert.subject.cn:\"s3.amazonaws.com\" hostname:{TARGET}"},
+  {"id":"sh-cloud-002","engine":"shodan","category":"Exposed Cloud Storage","tag":"AWS S3","query":"http.html:\"ListBucketResult\" hostname:{TARGET}"},
+  {"id":"sh-cloud-003","engine":"shodan","category":"Exposed Cloud Storage","tag":"Azure","query":"ssl.cert.subject.cn:\"*.blob.core.windows.net\" hostname:{TARGET}"},
+  {"id":"sh-cloud-004","engine":"shodan","category":"Exposed Cloud Storage","tag":"GCP","query":"ssl:\"*.storage.googleapis.com\" hostname:{TARGET}"},
+
+  {"id":"sh-info-001","engine":"shodan","category":"Information Disclosure","tag":"Git exposed","query":"hostname:{TARGET} \"X-Git-Branch\""},
+  {"id":"sh-info-002","engine":"shodan","category":"Information Disclosure","tag":".env exposed","query":"hostname:{TARGET} http.html:\"DB_PASSWORD\""},
+  {"id":"sh-info-003","engine":"shodan","category":"Information Disclosure","tag":"Default creds","query":"hostname:{TARGET} \"default password\""},
+
+  {"id":"sh-panel-001","engine":"shodan","category":"Login & Admin Panels","tag":"Jenkins","query":"hostname:{TARGET} http.title:\"Dashboard [Jenkins]\""},
+  {"id":"sh-panel-002","engine":"shodan","category":"Login & Admin Panels","tag":"GitLab","query":"hostname:{TARGET} http.title:\"GitLab\""},
+  {"id":"sh-panel-003","engine":"shodan","category":"Login & Admin Panels","tag":"Grafana","query":"hostname:{TARGET} http.title:\"Grafana\""},
+  {"id":"sh-panel-004","engine":"shodan","category":"Login & Admin Panels","tag":"Kibana","query":"hostname:{TARGET} http.title:\"Kibana\""},
+
+  {"id":"gh-sec-001","engine":"github","category":"Leaked Secrets & Tokens","tag":"AWS keys","query":"\"{TARGET}\" \"AKIA\" filename:.env"},
+  {"id":"gh-sec-002","engine":"github","category":"Leaked Secrets & Tokens","tag":"AWS keys","query":"\"{TARGET}\" \"aws_secret_access_key\""},
+  {"id":"gh-sec-003","engine":"github","category":"Leaked Secrets & Tokens","tag":"Azure","query":"\"{TARGET}\" \"DefaultEndpointsProtocol=https\" \"AccountKey=\""},
+  {"id":"gh-sec-004","engine":"github","category":"Leaked Secrets & Tokens","tag":"GCP","query":"\"{TARGET}\" \"private_key_id\" \"client_email\""},
+  {"id":"gh-sec-005","engine":"github","category":"Leaked Secrets & Tokens","tag":"Slack","query":"\"{TARGET}\" \"xoxb-\" OR \"xoxp-\""},
+  {"id":"gh-sec-006","engine":"github","category":"Leaked Secrets & Tokens","tag":"Stripe","query":"\"{TARGET}\" \"sk_live_\""},
+  {"id":"gh-sec-007","engine":"github","category":"Leaked Secrets & Tokens","tag":"GitHub","query":"\"{TARGET}\" \"ghp_\" OR \"gho_\""},
+  {"id":"gh-sec-008","engine":"github","category":"Leaked Secrets & Tokens","tag":"JWT","query":"\"{TARGET}\" \"eyJhbGciOi\""},
+  {"id":"gh-sec-009","engine":"github","category":"Leaked Secrets & Tokens","tag":"Generic","query":"\"{TARGET}\" \"password\" filename:.env"},
+  {"id":"gh-sec-010","engine":"github","category":"Leaked Secrets & Tokens","tag":"Generic","query":"\"{TARGET}\" \"api_key\" OR \"apikey\""},
+  {"id":"gh-sec-011","engine":"github","category":"Leaked Secrets & Tokens","tag":"DB creds","query":"\"{TARGET}\" \"DB_PASSWORD\""},
+  {"id":"gh-sec-012","engine":"github","category":"Leaked Secrets & Tokens","tag":"SMTP","query":"\"{TARGET}\" \"SMTP_PASSWORD\" OR \"MAIL_PASSWORD\""},
+
+  {"id":"gh-info-001","engine":"github","category":"Information Disclosure","tag":"Internal docs","query":"\"{TARGET}\" extension:md \"internal\""},
+  {"id":"gh-info-002","engine":"github","category":"Information Disclosure","tag":"Config files","query":"\"{TARGET}\" filename:config.json"},
+  {"id":"gh-info-003","engine":"github","category":"Information Disclosure","tag":"Kubernetes","query":"\"{TARGET}\" filename:kubeconfig"},
+  {"id":"gh-info-004","engine":"github","category":"Information Disclosure","tag":"SSH keys","query":"\"{TARGET}\" filename:id_rsa"},
+
+  {"id":"f-asset-001","engine":"fofa","category":"Subdomain & Asset Discovery","tag":"Domain","query":"domain=\"{TARGET}\""},
+  {"id":"f-asset-002","engine":"fofa","category":"Subdomain & Asset Discovery","tag":"Cert","query":"cert=\"{TARGET}\""},
+  {"id":"f-asset-003","engine":"fofa","category":"Subdomain & Asset Discovery","tag":"Host","query":"host=\"{TARGET}\""},
+  {"id":"f-panel-001","engine":"fofa","category":"Login & Admin Panels","tag":"Admin","query":"domain=\"{TARGET}\" && title=\"admin\""},
+  {"id":"f-panel-002","engine":"fofa","category":"Login & Admin Panels","tag":"Login","query":"domain=\"{TARGET}\" && body=\"login\""},
+  {"id":"f-cloud-001","engine":"fofa","category":"Exposed Cloud Storage","tag":"AWS S3","query":"domain=\"s3.amazonaws.com\" && body=\"{TARGET}\""},
+  {"id":"f-cloud-002","engine":"fofa","category":"Exposed Cloud Storage","tag":"Azure Blob","query":"domain=\"blob.core.windows.net\" && body=\"{TARGET}\""},
+  {"id":"f-vuln-001","engine":"fofa","category":"Vulnerable Endpoints","tag":"Swagger","query":"domain=\"{TARGET}\" && body=\"swagger-ui\""},
+  {"id":"f-vuln-002","engine":"fofa","category":"Vulnerable Endpoints","tag":"Actuator","query":"domain=\"{TARGET}\" && body=\"actuator\""},
+
+  {"id":"c-asset-001","engine":"censys","category":"Subdomain & Asset Discovery","tag":"Cert","query":"services.tls.certificates.leaf_data.subject.common_name:{TARGET}"},
+  {"id":"c-asset-002","engine":"censys","category":"Subdomain & Asset Discovery","tag":"SAN","query":"services.tls.certificates.leaf_data.names:{TARGET}"},
+  {"id":"c-asset-003","engine":"censys","category":"Subdomain & Asset Discovery","tag":"DNS","query":"dns.names:{TARGET}"},
+  {"id":"c-panel-001","engine":"censys","category":"Login & Admin Panels","tag":"HTTP title","query":"services.http.response.html_title:\"admin\" and dns.names:{TARGET}"},
+  {"id":"c-cloud-001","engine":"censys","category":"Exposed Cloud Storage","tag":"S3","query":"services.http.response.headers.server:\"AmazonS3\" and dns.names:{TARGET}"},
+  {"id":"c-port-001","engine":"censys","category":"IoT & Industrial","tag":"Open ports","query":"services.port:3389 and dns.names:{TARGET}"},
+  {"id":"c-port-002","engine":"censys","category":"IoT & Industrial","tag":"Databases","query":"services.port:{27017,3306,5432,6379,9200} and dns.names:{TARGET}"},
+
+  {"id":"h-asset-001","engine":"hunter","category":"Subdomain & Asset Discovery","tag":"Domain assets","query":"domain=\"{TARGET}\""},
+  {"id":"h-asset-002","engine":"hunter","category":"Subdomain & Asset Discovery","tag":"Domain suffix","query":"domain.suffix==\"{TARGET}\""},
+  {"id":"h-asset-003","engine":"hunter","category":"Subdomain & Asset Discovery","tag":"Cert subject","query":"cert.subject=\"{TARGET}\""},
+  {"id":"h-asset-004","engine":"hunter","category":"Subdomain & Asset Discovery","tag":"Cert org","query":"cert.subject_org=\"{TARGET}\""},
+  {"id":"h-panel-001","engine":"hunter","category":"Login & Admin Panels","tag":"Login pages","query":"domain=\"{TARGET}\"&&web.title=\"login\""},
+  {"id":"h-panel-002","engine":"hunter","category":"Login & Admin Panels","tag":"Admin pages","query":"domain=\"{TARGET}\"&&web.title=\"admin\""},
+  {"id":"h-panel-003","engine":"hunter","category":"Login & Admin Panels","tag":"Dashboards","query":"domain=\"{TARGET}\"&&web.title=\"dashboard\""},
+  {"id":"h-info-001","engine":"hunter","category":"Information Disclosure","tag":"Directory listing","query":"domain=\"{TARGET}\"&&web.title=\"Index of /\""},
+  {"id":"h-info-002","engine":"hunter","category":"Information Disclosure","tag":"phpinfo exposed","query":"domain=\"{TARGET}\"&&web.body=\"phpinfo()\""},
+  {"id":"h-port-001","engine":"hunter","category":"IoT & Industrial","tag":"RDP","query":"domain=\"{TARGET}\"&&ip.port==\"3389\""},
+  {"id":"h-port-002","engine":"hunter","category":"IoT & Industrial","tag":"SSH","query":"domain=\"{TARGET}\"&&ip.port==\"22\""},
+  {"id":"h-vuln-001","engine":"hunter","category":"Vulnerable Endpoints","tag":"Swagger","query":"domain=\"{TARGET}\"&&web.body=\"swagger-ui\""},
+
+  {"id":"z-asset-001","engine":"zoomeye","category":"Subdomain & Asset Discovery","tag":"Hostname","query":"hostname:{TARGET}"},
+  {"id":"z-asset-002","engine":"zoomeye","category":"Subdomain & Asset Discovery","tag":"Site","query":"site:{TARGET}"},
+  {"id":"z-port-001","engine":"zoomeye","category":"IoT & Industrial","tag":"RDP","query":"hostname:{TARGET} +port:3389"},
+  {"id":"z-port-002","engine":"zoomeye","category":"IoT & Industrial","tag":"DB","query":"hostname:{TARGET} +port:3306"},
+  {"id":"z-panel-001","engine":"zoomeye","category":"Login & Admin Panels","tag":"App","query":"hostname:{TARGET} +app:\"Jenkins\""},
+  {"id":"z-cloud-001","engine":"zoomeye","category":"Exposed Cloud Storage","tag":"S3","query":"ssl:\"s3.amazonaws.com\" +hostname:{TARGET}"},
+
+  {"id":"gr-sec-001","engine":"grepapp","category":"Leaked Secrets & Tokens","tag":"AWS","query":"AKIA[0-9A-Z]{16}"},
+  {"id":"gr-sec-002","engine":"grepapp","category":"Leaked Secrets & Tokens","tag":"GitHub","query":"ghp_[A-Za-z0-9]{36}"},
+  {"id":"gr-sec-003","engine":"grepapp","category":"Leaked Secrets & Tokens","tag":"Stripe","query":"sk_live_[0-9a-zA-Z]{24}"},
+  {"id":"gr-sec-004","engine":"grepapp","category":"Leaked Secrets & Tokens","tag":"Slack","query":"xox[baprs]-[0-9A-Za-z-]{10,48}"},
+  {"id":"gr-sec-005","engine":"grepapp","category":"Leaked Secrets & Tokens","tag":"Target","query":"{TARGET}"},
+  {"id":"gr-sec-006","engine":"grepapp","category":"Leaked Secrets & Tokens","tag":"JWT","query":"eyJ[A-Za-z0-9_=-]{10,}\\.[A-Za-z0-9_=-]{10,}\\.[A-Za-z0-9_=-]{10,}"}
+]
+;</script>
+  <script>
+/* =============================================================
+   HuntTerminal — app.js
+   Loads dorks, handles target injection, filtering, search,
+   copy-to-clipboard, and one-click launch to each engine.
+   ============================================================= */
+
+(() => {
+  'use strict';
+
+  // ----- Engine metadata: pretty name + launch URL template -----
+  const ENGINES = {
+    google:   { name: 'Google',   url: q => `https://www.google.com/search?q=${encodeURIComponent(q)}` },
+    shodan:   { name: 'Shodan',   url: q => `https://www.shodan.io/search?query=${encodeURIComponent(q)}` },
+    github:   { name: 'GitHub',   url: q => `https://github.com/search?q=${encodeURIComponent(q)}&type=code` },
+    fofa:     { name: 'FOFA',     url: q => `https://fofa.info/result?qbase64=${btoa(unescape(encodeURIComponent(q)))}` },
+    censys:   { name: 'Censys',   url: q => `https://search.censys.io/search?resource=hosts&q=${encodeURIComponent(q)}` },
+    hunter:   { name: 'Hunter',   url: q => `https://hunter.how/list?searchValue=${encodeURIComponent(q)}` },
+    zoomeye:  { name: 'ZoomEye',  url: q => `https://www.zoomeye.org/searchResult?q=${encodeURIComponent(q)}` },
+    grepapp:  { name: 'Grep.app', url: q => `https://grep.app/search?q=${encodeURIComponent(q)}` }
+  };
+
+  // ----- State -----
+  const state = {
+    dorks: [],
+    target: 'example.com',
+    engine: 'all',
+    category: 'all',
+    search: ''
+  };
+
+  // ----- DOM refs -----
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => document.querySelectorAll(sel);
+
+  const els = {
+    engineSel:   $('#engine'),
+    targetInp:   $('#target'),
+    applyBtn:    $('#apply'),
+    dorkTypeSel: $('#dork-type'),
+    customUrl:   $('#custom-url'),
+    generateBtn: $('#generate'),
+    searchInp:   $('#search'),
+    catChips:    $('#cat-chips'),
+    status:      $('#status'),
+    results:     $('#results'),
+    themeBtn:    $('#theme-toggle'),
+    toast:       $('#toast')
+  };
+
+  // ----- Boot -----
+  async function init() {
+    bindUI();
+    loadTheme();
+    state.dorks = window.__DORKS__;
+    populateDorkTypes();
+    render();
+  }
+
+  function bindUI() {
+    els.engineSel.addEventListener('change', e => { state.engine = e.target.value; populateDorkTypes(); render(); });
+    els.applyBtn.addEventListener('click', applyTarget);
+    els.targetInp.addEventListener('keydown', e => { if (e.key === 'Enter') applyTarget(); });
+    if (els.dorkTypeSel) els.dorkTypeSel.addEventListener('change', e => { state.category = e.target.value; render(); });
+    if (els.generateBtn) els.generateBtn.addEventListener('click', onGenerate);
+    if (els.searchInp) els.searchInp.addEventListener('input', e => { state.search = e.target.value.trim().toLowerCase(); render(); });
+    els.themeBtn.addEventListener('click', toggleTheme);
+  }
+
+  // Populate the Dork Type dropdown from currently available categories
+  function populateDorkTypes() {
+    if (!els.dorkTypeSel) return;
+    const relevant = state.engine === 'all'
+      ? state.dorks
+      : state.dorks.filter(d => d.engine === state.engine);
+    const cats = [...new Set(relevant.map(d => d.category))].sort();
+    const current = state.category;
+    els.dorkTypeSel.innerHTML =
+      `<option value="all">-- All Dork Types --</option>` +
+      cats.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('');
+    // preserve selection if still valid
+    if (cats.includes(current)) {
+      els.dorkTypeSel.value = current;
+    } else {
+      state.category = 'all';
+      els.dorkTypeSel.value = 'all';
+    }
+  }
+
+  // Generate = load a custom JSON dork file from URL and merge into the library
+  async function onGenerate() {
+    const url = (els.customUrl.value || '').trim();
+    if (!url) { toast('Enter a dork file URL first'); return; }
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('Invalid format — expected JSON array');
+      // basic normalization: require engine + category + query
+      const valid = data.filter(d => d && d.engine && d.category && d.query);
+      state.dorks = [...state.dorks, ...valid];
+      populateDorkTypes();
+      render();
+      toast(`Loaded ${valid.length} custom dorks`);
+    } catch (err) {
+      console.error(err);
+      toast(`Load failed: ${err.message}`);
+    }
+  }
+
+  function applyTarget() {
+    const v = els.targetInp.value.trim();
+    state.target = v || 'example.com';
+    render();
+    toast(`Target locked: ${state.target}`);
+  }
+
+  // ----- Category chips (built from data) -----
+  function buildCategoryChips() {
+    const cats = ['all', ...new Set(state.dorks.map(d => d.category))];
+    els.catChips.innerHTML = cats.map(c =>
+      `<button class="chip ${c === 'all' ? 'active' : ''}" data-cat="${escapeAttr(c)}">${c === 'all' ? 'All Categories' : c}</button>`
+    ).join('');
+    els.catChips.addEventListener('click', e => {
+      const c = e.target.closest('.chip'); if (!c) return;
+      $$('#cat-chips .chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      state.category = c.dataset.cat;
+      render();
+    });
+  }
+
+  // ----- Filtering -----
+  function filtered() {
+    const t = state.target;
+    return state.dorks
+      .filter(d => state.engine === 'all' || d.engine === state.engine)
+      .filter(d => state.category === 'all' || d.category === state.category)
+      .filter(d => {
+        if (!state.search) return true;
+        const blob = `${d.tag || ''} ${d.category} ${d.query}`.toLowerCase();
+        return blob.includes(state.search);
+      })
+      .map(d => ({ ...d, query: d.query.replaceAll('{TARGET}', t) }));
+  }
+
+  // ----- Render -----
+  function render() {
+    const list = filtered();
+    els.status.innerHTML = `Loaded <span class="num">${list.length}</span> / <span class="num">${state.dorks.length}</span> dorks · target: <span class="num">${escapeHtml(state.target)}</span> · engine: <span class="num">${state.engine === 'all' ? 'all' : ENGINES[state.engine].name}</span>`;
+
+    if (!list.length) {
+      els.results.innerHTML = `<div class="empty">No dorks match the current filters.</div>`;
+      return;
+    }
+
+    // group by category
+    const groups = {};
+    list.forEach(d => { (groups[d.category] = groups[d.category] || []).push(d); });
+
+    els.results.innerHTML = Object.entries(groups).map(([cat, items]) => `
+      <section class="category-block reveal">
+        <h2 class="category-title">${escapeHtml(cat)} <span class="count">${items.length}</span></h2>
+        <div class="grid">
+          ${items.map(renderCard).join('')}
+        </div>
+      </section>
+    `).join('');
+
+    // bind: whole card runs, copy button copies (stop propagation)
+    els.results.querySelectorAll('.card').forEach(c => c.addEventListener('click', onRun));
+    els.results.querySelectorAll('[data-act="copy"]').forEach(b => {
+      b.addEventListener('click', e => { e.stopPropagation(); onCopy(e); });
+    });
+  }
+
+  function renderCard(d) {
+    return `
+      <article class="card" data-engine="${d.engine}" data-query="${escapeAttr(d.query)}" title="Click to run on the target engine">
+        <div class="card-cat">${escapeHtml(d.tag)}</div>
+        <div class="card-query-wrap">
+          <pre class="card-query">${escapeHtml(d.query)}</pre>
+          <button class="copy-btn" data-act="copy" data-query="${escapeAttr(d.query)}" title="Copy dork" aria-label="Copy">⧉</button>
+        </div>
+      </article>
+    `;
+  }
+
+  // ----- Actions -----
+  function onRun(e) {
+    const card = e.currentTarget;
+    const eng = card.dataset.engine;
+    const q   = card.dataset.query;
+    const url = ENGINES[eng].url(q);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  async function onCopy(e) {
+    const q = e.currentTarget.dataset.query;
+    try {
+      await navigator.clipboard.writeText(q);
+      toast('Copied to clipboard');
+    } catch {
+      // fallback: textarea select+copy
+      const ta = document.createElement('textarea');
+      ta.value = q; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove();
+      toast('Copied to clipboard');
+    }
+  }
+
+  // ----- Theme -----
+  function loadTheme() {
+    const t = localStorage.getItem('ht-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    els.themeBtn.textContent = t === 'dark' ? '☼ light' : '☾ dark';
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ht-theme', next);
+    els.themeBtn.textContent = next === 'dark' ? '☼ light' : '☾ dark';
+  }
+
+  // ----- Toast -----
+  let toastTimer;
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2000);
+  }
+
+  // ----- Helpers -----
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function escapeAttr(s) {
+    return escapeHtml(s).replaceAll('\n', '&#10;');
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+
+  </script>
+</body>
+</html>
